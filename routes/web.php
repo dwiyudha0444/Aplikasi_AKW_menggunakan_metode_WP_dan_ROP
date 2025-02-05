@@ -137,8 +137,8 @@ Route::put('/dashboard_admin/kategori/update/{id}', [KategoriController::class, 
 Route::delete('/dashboard_admin/kategori/delete/{id}', [KategoriController::class, 'destroy'])->name('destroy_admin_kategori');
 
 // owner
-
 Route::get('/dashboard_owner', [OwnerDashboardController::class, 'index'])->name('dashboard_owner');
 Route::get('/dashboard_owner/penjualan', [OwnerPenjualanController::class, 'index'])->name('owner_penjualan');
 Route::get('/dashboard_owner/penilaian', [OwnerPenilaianController::class, 'index'])->name('owner_penilaian');
 Route::get('/dashboard_owner/daftar_reseller', [OwnerDaftarResellerController::class, 'index'])->name('owner_daftarreseller');
+Route::get('/dashboard_owner/penjualan/export-pdf', [OwnerPenjualanController::class, 'exportPDF'])->name('penjualan.exportPDF');
