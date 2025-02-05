@@ -4,8 +4,10 @@ namespace App\Http\Controllers\landingpage\owner;
 
 use App\Http\Controllers\Controller;
 use App\Models\Pemesanan;
+use App\Models\PemesananProduk;
 use Illuminate\Http\Request;
-use Knp\Snappy\Pdf;
+// use Knp\Snappy\Pdf;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class OwnerPenjualanController extends Controller
 {
@@ -15,22 +17,34 @@ class OwnerPenjualanController extends Controller
         return view('dashboard.owner.penjualan.index', compact('pemesanan'));
     }
 
-    public function exportPDF()
+    public function exportPdf()
     {
         $pemesanan = Pemesanan::all();
 
-        // Render the view to HTML
+        // Render view ke HTML
         $html = view('dashboard.owner.penjualan.pdfpenjualan', compact('pemesanan'))->render();
 
-        // Generate PDF using the HTML content
-        $pdf = app(Pdf::class)->getOutputFromHtml($html, [
-            'page-size' => 'A4',
-            'orientation' => 'landscape'
-        ]);
+        // Generate PDF menggunakan DomPDF
+        $pdf = Pdf::loadHTML($html)
+            ->setPaper('A4', 'landscape'); // Set ukuran kertas dan orientasi
 
-        // Return the PDF as a download
-        return response($pdf)
-            ->header('Content-Type', 'application/pdf')
-            ->header('Content-Disposition', 'attachment; filename="Laporan_Penjualan.pdf"');
+        // Return file PDF untuk diunduh
+        return $pdf->download('Laporan_Penjualan.pdf');
     }
+
+    public function exportPdfProduk()
+    {
+        $pemesananProduk = PemesananProduk::all();
+
+        // Render view ke HTML (buat view baru: pdfproduk.blade.php)
+        $html = view('dashboard.owner.penjualan.pdfpenjproduk', compact('pemesananProduk'))->render();
+
+        // Generate PDF menggunakan DomPDF
+        $pdf = Pdf::loadHTML($html)
+            ->setPaper('A4', 'landscape'); // Set ukuran kertas dan orientasi
+
+        // Return file PDF untuk diunduh
+        return $pdf->download('Laporan_Produk.pdf');
+    }
+
 }

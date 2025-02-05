@@ -27,7 +27,9 @@
             <div class="col-xl-12">
                 <section class="hk-sec-wrapper">
                     <h5 class="hk-sec-title">Tabel Transaksi</h5>
-                    <a href="{{ route('penjualan.exportPDF') }}" class="btn btn-danger mb-3">Print PDF</a>
+                    <a href="{{ route('penjualan.exportPDF') }}" class="btn btn-danger mb-3">Print Pemesanan</a>
+                    <a href="{{ route('penjualan.exportPdfProduk') }}" class="btn btn-warning mb-3">Print Detail Pemesanan Produk</a>
+
 
                     <p class="mb-40">Daftar transaksi pemesanan yang dilakukan oleh reseller.</p>
                     <div class="row">

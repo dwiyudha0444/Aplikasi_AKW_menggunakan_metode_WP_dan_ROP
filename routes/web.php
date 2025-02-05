@@ -142,3 +142,4 @@ Route::get('/dashboard_owner/penjualan', [OwnerPenjualanController::class, 'inde
 Route::get('/dashboard_owner/penilaian', [OwnerPenilaianController::class, 'index'])->name('owner_penilaian');
 Route::get('/dashboard_owner/daftar_reseller', [OwnerDaftarResellerController::class, 'index'])->name('owner_daftarreseller');
 Route::get('/dashboard_owner/penjualan/export-pdf', [OwnerPenjualanController::class, 'exportPDF'])->name('penjualan.exportPDF');
+Route::get('/dashboard_owner/penjualan/export-pemesanan-produk-pdf', [OwnerPenjualanController::class, 'exportPdfProduk'])->name('penjualan.exportPdfProduk');
