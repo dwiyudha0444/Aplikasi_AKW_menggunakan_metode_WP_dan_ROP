@@ -64,7 +64,26 @@
                                                     <td>{{ $index + 1 }}</td>
                                                     <td>{{ $product->nama }}</td>
                                                     <td>{{ $product->kategori->nama }}</td>
-                                                    <td>{{ number_format($product->harga, 0, ',', '.') }}</td>
+                                                    <td>
+                                                        @if ($product->harga > 100000)
+                                                            @php $diskon = 20; @endphp
+                                                        @elseif ($product->harga > 50000)
+                                                            @php $diskon = 10; @endphp
+                                                        @else
+                                                            @php $diskon = 5; @endphp
+                                                        @endif
+
+                                                        @if ($diskon > 0)
+                                                            <span style="text-decoration: line-through; color: red;">
+                                                                Rp{{ number_format($product->harga, 0, ',', '.') }}
+                                                            </span>
+                                                            <br>
+                                                            <strong>Rp{{ number_format($product->harga_setelah_diskon, 0, ',', '.') }}</strong>
+                                                        @else
+                                                            <strong>Rp{{ number_format($product->harga, 0, ',', '.') }}</strong>
+                                                        @endif
+                                                    </td>
+
                                                     <td>{{ $product->stok }}</td>
                                                     <td>
                                                         <!-- Menampilkan gambar produk jika ada -->
