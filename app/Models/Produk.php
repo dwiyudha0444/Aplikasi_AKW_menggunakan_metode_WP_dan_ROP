@@ -37,4 +37,19 @@ class Produk extends Model
         // Jika gambar tidak ada, kembalikan URL default atau placeholder
         return asset('storage/images/default.jpg'); // Ganti dengan URL gambar default jika diperlukan
     }
+
+    public function getHargaSetelahDiskonAttribute()
+    {
+        $diskon = 0; 
+
+        if ($this->harga > 100000) {
+            $diskon = 20;
+        } elseif ($this->harga > 50000) {
+            $diskon = 10; 
+        } else {
+            $diskon = 5;
+        }
+
+        return $this->harga - ($this->harga * ($diskon / 100));
+    }
 }

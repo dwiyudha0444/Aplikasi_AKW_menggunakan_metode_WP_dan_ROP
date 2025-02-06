@@ -23,6 +23,7 @@
                         <div class="card-body p-4">
                             <div class="text-center">
                                 <h5 class="fw-bolder">{{ $product->nama }}</h5>
+
                                 @if ($product->rating)
                                     <div class="d-flex justify-content-center small text-warning mb-2">
                                         @for ($i = 0; $i < 5; $i++)
@@ -30,12 +31,35 @@
                                         @endfor
                                     </div>
                                 @endif
-                                @if ($product->is_sale)
-                                    <span
-                                        class="text-muted text-decoration-line-through">Rp{{ number_format($product->harga, 2) }}</span>
+
+                                {{-- Cek apakah harga mendapat diskon --}}
+                                @php
+                                    $diskon = 0;
+                                    if ($product->harga > 100000) {
+                                        $diskon = 20;
+                                    } elseif ($product->harga > 50000) {
+                                        $diskon = 10;
+                                    } else {
+                                        $diskon = 5;
+                                    }
+                                    $hargaSetelahDiskon = $product->harga - $product->harga * ($diskon / 100);
+                                @endphp
+
+                                @if ($diskon > 0)
+                                    <span class="text-muted text-decoration-line-through">
+                                        Rp{{ number_format($product->harga, 2, ',', '.') }}
+                                    </span>
+                                    <br>
+                                    <span class="fw-bold text-danger">
+                                        Rp{{ number_format($hargaSetelahDiskon, 2, ',', '.') }}
+                                    </span>
+                                @else
+                                    <span class="fw-bold">
+                                        Rp{{ number_format($product->harga, 2, ',', '.') }}
+                                    </span>
                                 @endif
-                                Rp{{ number_format($product->harga, 2) }}
                             </div>
+
                         </div>
                         <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
                             <div class="text-center">
