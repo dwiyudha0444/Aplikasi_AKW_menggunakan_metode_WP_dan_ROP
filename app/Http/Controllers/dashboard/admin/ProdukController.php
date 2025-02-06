@@ -36,24 +36,39 @@ class ProdukController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'nama' => 'required|string|max:255', 
-            'id_kategori' => 'required|exists:kategori,id', 
+            'nama' => 'required|string|max:255',
+            'id_kategori' => 'required|exists:kategori,id',
             'harga' => 'required|numeric|min:0',
             'stok' => 'required|numeric|min:0',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048', 
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
 
         try {
+            $harga = $request->harga;
+            $diskon = 0;
+
+            // Calculate the discount based on the price
+            if ($harga > 100000) {
+                $diskon = 20;
+            } elseif ($harga > 50000) {
+                $diskon = 10;
+            } else {
+                $diskon = 5;
+            }
+
+            $hargaSetelahDiskon = $harga - ($harga * ($diskon / 100));
+
             $produk = new Produk;
             $produk->nama = $request->input('nama');
             $produk->id_kategori = $request->input('id_kategori');
-            $produk->harga = $request->input('harga');
+            $produk->harga = $harga;
+            $produk->harga_setelah_diskon = $hargaSetelahDiskon; // Store discounted price
             $produk->stok = $request->input('stok');
 
             if ($request->hasFile('image')) {
                 $image = $request->file('image');
                 $imageName = time() . '.' . $image->getClientOriginalExtension();
-                $imagePath = $image->storeAs('public/images', $imageName); 
+                $imagePath = $image->storeAs('public/images', $imageName);
                 $produk->image = 'storage/images/' . $imageName;
             }
 
@@ -66,9 +81,12 @@ class ProdukController extends Controller
     }
 
 
+
     public function update(Request $request, $id)
     {
+        // dd($request->all());
         try {
+            // Log the uploaded image information if any
             if ($request->hasFile('image')) {
                 Log::info('File ditemukan:', [
                     'file_name' => $request->file('image')->getClientOriginalName(),
@@ -79,23 +97,43 @@ class ProdukController extends Controller
                 Log::warning('Tidak ada file yang diunggah.');
             }
 
+            // Validate the incoming request
             $validated = $request->validate([
                 'nama' => 'required|string|max:255',
                 'id_kategori' => 'required|exists:kategori,id',
                 'harga' => 'required|numeric',
+                'harga_setelah_diskon' => 'nullable|numeric',
                 'stok' => 'required|numeric|min:1',
                 'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             ]);
 
+            // Find the existing product
             $produk = Produk::findOrFail($id);
 
+            // Calculate discount based on the updated price
+            $harga = $validated['harga'];
+            $diskon = 0;
+
+            if ($harga > 100000) {
+                $diskon = 20;
+            } elseif ($harga > 50000) {
+                $diskon = 10;
+            } else {
+                $diskon = 5;
+            }
+
+            $hargaSetelahDiskon = $harga - ($harga * ($diskon / 100));
+
+            // Update the product details
             $produk->update([
                 'nama' => $validated['nama'],
                 'id_kategori' => $validated['id_kategori'],
-                'harga' => $validated['harga'],
+                'harga' => $harga,
+                'harga_setelah_diskon' => $hargaSetelahDiskon,  // Store discounted price
                 'stok' => $validated['stok'],
             ]);
 
+            // Handle image update if present
             if ($request->hasFile('image')) {
                 $image = $request->file('image');
                 $imageName = time() . '.' . $image->getClientOriginalExtension();
@@ -105,6 +143,7 @@ class ProdukController extends Controller
 
             return redirect()->route('admin_produk')->with('success', 'Produk berhasil diperbarui!');
         } catch (Exception $e) {
+            // Log the exception error
             Log::error('Error in Produk Update: ' . $e->getMessage(), [
                 'exception' => $e,
                 'request' => $request->all(),
@@ -113,6 +152,7 @@ class ProdukController extends Controller
             return back()->with('error', 'Terjadi kesalahan saat memperbarui produk.');
         }
     }
+
 
     public function destroy($id)
     {

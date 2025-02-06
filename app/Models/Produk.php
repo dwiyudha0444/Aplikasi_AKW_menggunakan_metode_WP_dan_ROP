@@ -13,6 +13,7 @@ class Produk extends Model
         'nama',
         'id_kategori',
         'harga',
+        'harga_setelah_diskon',
         'stok',
         'image'
     ];
@@ -38,18 +39,18 @@ class Produk extends Model
         return asset('storage/images/default.jpg'); // Ganti dengan URL gambar default jika diperlukan
     }
 
-    public function getHargaSetelahDiskonAttribute()
-    {
-        $diskon = 0; 
+    // public function getHargaSetelahDiskonAttribute()
+    // {
+    //     $diskon = 0; 
 
-        if ($this->harga > 100000) {
-            $diskon = 20;
-        } elseif ($this->harga > 50000) {
-            $diskon = 10; 
-        } else {
-            $diskon = 5;
-        }
+    //     if ($this->harga > 100000) {
+    //         $diskon = 20;
+    //     } elseif ($this->harga > 50000) {
+    //         $diskon = 10; 
+    //     } else {
+    //         $diskon = 5;
+    //     }
 
-        return $this->harga - ($this->harga * ($diskon / 100));
-    }
+    //     return $this->harga - ($this->harga * ($diskon / 100));
+    // }
 }

@@ -37,7 +37,8 @@
                         </div>
                     @endif
                     <!-- Form -->
-                    <form action="{{ route('update_admin_produk', $produk->id) }}" method="POST" enctype="multipart/form-data">
+                    <form action="{{ route('update_admin_produk', $produk->id) }}" method="POST"
+                        enctype="multipart/form-data">
                         @csrf
                         @method('PUT')
                         <div class="form-group">
@@ -66,6 +67,13 @@
                         </div>
 
                         <div class="form-group">
+                            <label for="harga_setelah_diskon">Harga Setelah Diskon</label>
+                            <input type="number" class="form-control" id="harga_setelah_diskon" name="harga_setelah_diskon"
+                                value="{{ $produk->harga_setelah_diskon ?? 0 }}" placeholder="Harga Setelah Diskon"
+                                readonly>
+                        </div>
+
+                        <div class="form-group">
                             <label for="stok">Stok</label>
                             <input type="number" class="form-control" id="stok" name="stok"
                                 value="{{ $produk->stok }}" placeholder="Stok Produk" required>
@@ -79,8 +87,7 @@
                         @if ($produk->image)
                             <div class="form-group">
                                 <label>Gambar Saat Ini</label>
-                                <img src="{{ $produk->image_url }}"
-                                    style="width: 100px; height: auto;">
+                                <img src="{{ $produk->image_url }}" style="width: 100px; height: auto;">
                             </div>
                         @else
                             <div class="form-group">
@@ -97,4 +104,32 @@
         <!-- /Row -->
     </div>
     <!-- /Container -->
+    <script>
+        // Function to calculate the discount based on the price
+        function calculateDiscount() {
+            var harga = parseFloat(document.getElementById('harga').value);
+            var diskon = 0;
+
+            // Discount logic
+            if (harga > 100000) {
+                diskon = 20;
+            } else if (harga > 50000) {
+                diskon = 10;
+            } else {
+                diskon = 5;
+            }
+
+            // Calculate the price after discount
+            var hargaSetelahDiskon = harga - (harga * (diskon / 100));
+
+            // Display the discounted price
+            document.getElementById('harga_setelah_diskon').value = hargaSetelahDiskon.toFixed(2);
+        }
+
+        // Event listener to call calculateDiscount when the harga field is changed
+        document.getElementById('harga').addEventListener('input', calculateDiscount);
+
+        // Initialize the discount calculation on page load
+        calculateDiscount();
+    </script>
 @endsection
