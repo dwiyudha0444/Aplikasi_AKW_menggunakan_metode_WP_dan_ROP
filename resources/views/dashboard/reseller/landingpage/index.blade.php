@@ -34,30 +34,23 @@
 
                                 {{-- Cek apakah harga mendapat diskon --}}
                                 @php
-                                    $diskon = 0;
-                                    if ($product->harga > 100000) {
-                                        $diskon = 20;
-                                    } elseif ($product->harga > 50000) {
-                                        $diskon = 10;
-                                    } else {
-                                        $diskon = 5;
-                                    }
-                                    $hargaSetelahDiskon = $product->harga - $product->harga * ($diskon / 100);
+                                    // Ensure $product->harga_setelah_diskon is already calculated and stored in the database
                                 @endphp
 
-                                @if ($diskon > 0)
+                                @if ($product->harga_setelah_diskon < $product->harga)
                                     <span class="text-muted text-decoration-line-through">
                                         Rp{{ number_format($product->harga, 2, ',', '.') }}
                                     </span>
                                     <br>
                                     <span class="fw-bold text-danger">
-                                        Rp{{ number_format($hargaSetelahDiskon, 2, ',', '.') }}
+                                        Rp{{ number_format($product->harga_setelah_diskon, 2, ',', '.') }}
                                     </span>
                                 @else
                                     <span class="fw-bold">
                                         Rp{{ number_format($product->harga, 2, ',', '.') }}
                                     </span>
                                 @endif
+
                             </div>
 
                         </div>
